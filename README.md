@@ -13,3 +13,4 @@ helper untuk melindungi website mu
 - melindungi form login anti bypass `SQL Login`
 - melindungi input, output anti `XSS, JSO`
 - penulisan Query SQL dengan mudah
+- redirect halaman
