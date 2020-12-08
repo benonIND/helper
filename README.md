@@ -4,7 +4,8 @@ helper untuk melindungi website mu
 ## penggunaan:
 > tempatkan file ini pada root home,<br>
 > lalu get pada file yang mau di lindungi dengan syntax `require('helper.php');`<br>
-> panggil method nya sesuai kebutuhan `security::method();`
+> panggil method nya sesuai kebutuhan `security::methodnya();`<br>
+> CONTOH :`security::redirect('http://google.com');`
 ## features
 - configurasi database dengan mudah
 - support driver `MYSQLI` and `PDO`
