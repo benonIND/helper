@@ -77,7 +77,7 @@ class security {
   |
   */
   public static function sec_blind($tampung){
-    $array = ['<','>',"'",'*'];
+    $array = ['%3C','%3E','%27','*','1=1','1=0','%22'];
     $replace = str_replace($array, '', $tampung);
   	$secure = preg_replace("/[^0-9a-zA-Z\-_]/", $tampung);
   	return $secure;
@@ -211,6 +211,59 @@ class security {
   */
   public static function redirect( $input=NULL ){
     header('location:'.$input.'');
+  }
+  
+  
+ /**
+  |--------------------------------------------------------------------------
+  | SET TANGGAL KE WAKTU INDONESIA
+  |--------------------------------------------------------------------------
+  |
+  | Meangatur waktu INDONESIA
+  | ketika memggunakan function date("Y-m-d");
+  |
+  */
+  public static function set_date( $default='Asia/Jakarta' ){
+    date_default_timezone_set($default);
+  }
+  
+  
+ /**
+  |--------------------------------------------------------------------------
+  | FILTER URI, URL USING SQLI OR XSS
+  |--------------------------------------------------------------------------
+  |
+  | Panggil method ini di file manapun yang ingin anda filter
+  | 
+  | Penggunaan Syntax:
+  | security::filter_uri();
+  */
+  public static function filter_uri(){
+    $uri = $_SERVER['REQUEST_URI'];
+    $ip  = $_SERVER['REMOTE_ADDR'];
+    $url = '';
+    $sess = $_GET['session'];
+    session_start();
+    if( $sess == "destroy" ) {
+      session_destroy();
+      clearstatcache();
+      echo '<script> alert("Ip unlocked!"); </script>';
+    }else{
+      if( $_SESSION['ip_user'] !== NULL ){
+        echo '
+        <script>
+          alert("your ip is banned!");
+          window.location ="'.$url.'";
+        </script>
+        ';
+      }
+      else{
+        if( strpos($uri, "%27") || strpos($uri,'%22') || strpos($uri,"%3C") || strpos($uri,"%3E") || strpos($uri,"*") || strpos($uri,"1=1") || strpos($uri,"1=0") || preg_match('/(union)/i',$uri) || preg_match('/(select)/i', $uri)){
+          $_SESSION['ip_user'] = $ip;
+          echo '<script> alert("your ip is banned!"); </script>';
+        }
+      }
+    }
   }
 }
 ?>
