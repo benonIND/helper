@@ -1,4 +1,4 @@
-# Zx helper version 1.1
+# Zx helper version 1.2
 helper untuk melindungi website mu
 
 ## penggunaan:
@@ -15,3 +15,5 @@ helper untuk melindungi website mu
 - melindungi input, output anti `XSS, JSO`
 - penulisan Query SQL dengan mudah
 - redirect halaman
+- filter `URI` patch parameter from `XSS`,`blind SQLI`,`SQLI MANUAL`,`JSO` and more
+- add timezone date area indonesia for using syntax `date()`
