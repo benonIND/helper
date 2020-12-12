@@ -1,4 +1,4 @@
-# Zx helper version 1.1
+# Zx helper version 1.3.0
 helper untuk melindungi website mu
 
 ## penggunaan:
@@ -7,6 +7,9 @@ helper untuk melindungi website mu
 > panggil method nya sesuai kebutuhan `security::methodnya();`<br>
 > CONTOH :`security::redirect('http://google.com');`
 ## features
+- secure uploaded `security::filter_upload();`
+- secure CSRF `security::lock_csrf(available input);`
+- secure comment user `security::comment(available input);`
 - configurasi database dengan mudah
 - support driver `MYSQLI` and `PDO`
 - melindungi parameter ID anti `SQLI`
