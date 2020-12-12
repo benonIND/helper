@@ -4,6 +4,7 @@
  * name : Zx helper
  * team : ZoneXploiter
  * author/coded : BENON_
+ * version : 1.3.0
  * 
  * NOTE!:
  * tempatkan file ini pada root home
@@ -77,7 +78,7 @@ class security {
   |
   */
   public static function sec_blind($tampung){
-    $array = ['<','>',"'",'*'];
+    $array = ['%3C','%3E','%27','*','1=1','1=0','%22'];
     $replace = str_replace($array, '', $tampung);
   	$secure = preg_replace("/[^0-9a-zA-Z\-_]/", $tampung);
   	return $secure;
@@ -129,7 +130,7 @@ class security {
   }
   
   
-  /*
+ /**
   |--------------------------------------------------------------------------
   | KONEKSI DATABASE DENGAN DRIVER MYSQLI
   |--------------------------------------------------------------------------
@@ -211,6 +212,188 @@ class security {
   */
   public static function redirect( $input=NULL ){
     header('location:'.$input.'');
+  }
+  
+  
+ /**
+  |--------------------------------------------------------------------------
+  | SET TANGGAL KE WAKTU INDONESIA
+  |--------------------------------------------------------------------------
+  |
+  | Meangatur waktu INDONESIA
+  | ketika memggunakan function date("Y-m-d");
+  |
+  */
+  public static function set_date( $default='Asia/Jakarta' ){
+    date_default_timezone_set($default);
+  }
+  
+  
+ /**
+  |--------------------------------------------------------------------------
+  | FILTER URI, URL USING SQLI OR XSS
+  |--------------------------------------------------------------------------
+  |
+  | Panggil method ini di file manapun yang ingin anda filter
+  | 
+  | Penggunaan Syntax:
+  | security::filter_uri();
+  */
+  public static function filter_uri(){
+    $uri = $_SERVER['REQUEST_URI'];
+    $ip  = $_SERVER['REMOTE_ADDR'];
+    $url = '';
+    $sess = $_GET['session'];
+    session_start();
+    if( $sess == "destroy" ) {
+      session_destroy();
+      clearstatcache();
+      echo '<script> alert("Ip unlocked!"); </script>';
+    }else{
+      if( $_SESSION['ip_user'] !== NULL ){
+        echo '
+        <script>
+          alert("your ip is banned!");
+          window.location ="'.$url.'";
+        </script>
+        ';
+      }
+      else{
+        if( strpos($uri, "%27") || strpos($uri,'%22') || strpos($uri,"%3C") || strpos($uri,"%3E") || strpos($uri,"*") || strpos($uri,"1=1") || strpos($uri,"1=0") || preg_match('/(union)/i',$uri) || preg_match('/(select)/i', $uri)){
+          $_SESSION['ip_user'] = $ip;
+          echo '<script> alert("your ip is banned!"); </script>';
+        }
+      }
+    }
+  }
+  
+  
+ /**
+  |--------------------------------------------------------------------------
+  | MELINDUNGI INPUT COMMENT
+  |--------------------------------------------------------------------------
+  |
+  | Method ini dì gunakan input commentar
+  | Berguna supaya user yang berkomentar mengisi karakter
+  | yang tidak di inginkan tidak berdampak buruk pada website anda
+  |
+  | Penggunaan :
+  | $post = $_POST['comment']; #sebelum -> tidak aman
+  | $post = security::comment($_POST['comment']); #sesudah -> aman
+  |
+  */
+  public static function comment( $input=NULL ){
+    return htmlspecialchars( $input );
+  }
+  
+  
+ /**
+  |--------------------------------------------------------------------------
+  | MENGAMANKAN CSRF
+  |--------------------------------------------------------------------------
+  |
+  | method ini akan bekerja mengamankan website anda
+  | terutama yang memiliki fitur CSRF dengan Ajax
+  |
+  | Penggunaan:
+  | security::lock_csrf();
+  |
+  */
+  public static function lock_csrf( $input=NULL ){
+    header('Content-Type: application/json');
+    session_start();
+    if (isset($_SERVER['HTTP_ORIGIN'])) {
+        $address = 'http://' . $_SERVER['SERVER_NAME'];
+        if (strpos($address, $_SERVER['HTTP_ORIGIN']) !== 0) {
+            exit(json_encode([
+                'error' => 'Invalid Origin header: ' . $_SERVER['HTTP_ORIGIN']
+            ]));
+        }
+    } else {
+        exit(json_encode(['error' => 'No Origin header']));
+    }
+    
+    # generat token CSRF
+    if (empty($_SESSION['csrf_token'])) {
+      $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+      echo '<meta name="csrf-token" content="<?= $_SESSION[\'csrf_token\'] ?>">';
+      echo "
+        <script>
+          $.ajaxSetup({
+              headers : {
+                  'CsrfToken': $('meta[name=\"csrf-token\"]').attr('content')
+              }
+          });
+        </script>
+      ";
+      
+      #header('Content-Type: application/json');
+      $headers = apache_request_headers();
+      if (isset($headers['CsrfToken'])) {
+          if ($headers['CsrfToken'] !== $_SESSION['csrf_token']) {
+              exit(json_encode(['error' => 'Wrong CSRF token.']));
+          }
+      } else {
+          exit(json_encode(['error' => 'No CSRF token.']));
+      }
+    }
+  }
+  
+  
+  /**
+  |
+  |
+  |
+  |
+  */
+  public static function filter_upload( $input="/" ){
+    clearstatcache();
+    $root = $_SERVER['DOCUMENT_ROOT'];
+    @$name_file = $_FILES['benon']['name'];
+    @$file = $_FILES['benon']['tmp_name'];
+    $pecah = explode('.', $name_file);
+    $replace = preg_replace('/[^a-zA-Z]/','jpg',end($pecah));
+    $change = round(microtime(true)).'.'.$replace;
+    $path_info = pathinfo($change, PATHINFO_EXTENSION);
+    #$array = ['jpg','jpeg','mp3','mp4','gif'];
+    $path = $root.$input.$change;
+    if(isset($_POST['upload'])){
+      if( $path_info === 'jpg' || $path_info === 'jpeg' || $path_info === 'mp3' || $path_info === 'mp4' || $path_info === 'gif' ){
+        if(@copy($file, $path)){
+          echo '
+            <script>
+              alert("file name : '.$change.' successfull uploaded!");
+            </script>
+          ';
+        }
+      }else{
+        echo '
+          <script>
+            alert(" extention not allowed! ");
+          </script>
+        ';
+      }
+    }
+    echo '
+      <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
+      <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+      <div class="container">
+        <form method="POST" class="was-validated" enctype="multipart/form-data">
+          <div class="input-group is-invalid">
+            <div class="custom-file">
+              <input type="file" name="benon" class="custom-file-input" id="validatedInputGroupCustomFile" required>
+              <label class="custom-file-label" for="validatedInputGroupCustomFile">Choose file...</label>
+            </div>
+            <div class="input-group-append">
+               <button name="upload" class="btn btn-outline-secondary" type="submit">upload</button>
+            </div>
+          </div>
+          <div class="invalid-feedback">
+            Allowed : .jpg | .mp3 | .gif | .jpeg | .mp4
+          </div>
+        </form>
+      </div>
+    ';
   }
 }
 ?>
