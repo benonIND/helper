@@ -18,3 +18,4 @@ helper untuk melindungi website mu
 - melindungi input, output anti `XSS, JSO`
 - penulisan Query SQL dengan mudah
 - redirect halaman
+- and more
