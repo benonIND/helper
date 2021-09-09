@@ -1,19 +1,21 @@
 <?php
 
 /**
- * name : Zx helper
- * team : ZoneXploiter
- * author/coded : BENON_
- * version : 1.3.0
+ * Name : Zx helper
+ * Team : ZoneXploiter
+ * Author/coded : BENON_
+ * Version : 1.3.0
+ * PHP Version : 7.4++
  * 
  * NOTE!:
  * tempatkan file ini pada root home
+ * Example = public_html/helper.php
  * 
  * panggil helper ini di awal file dengan syntax
  * - require('helper.php');
  * 
  * lalu panggil method/function yang mau di gunakan
- * - security::method/function
+ * - Example = security::method();
  */
  
 class security {
@@ -27,12 +29,12 @@ class security {
   | sesuikan nama database, password dan username nya
   |
   */
-  public static function config_db(){
+  public static function config_db($h='localhost', $u='', $p='', $d=''){
     
-    $db['host']    = 'localhost'; # default
-    $db['user']    = '';
-    $db['pass']    = '';
-    $db['db_name'] = '';
+    $db['host']    = $h; # default
+    $db['user']    = $u;
+    $db['pass']    = $p;
+    $db['db_name'] = $d;
     
     define("DB_HOST", $db['host']);
     define("DB_USER", $db['user']);
@@ -359,13 +361,14 @@ class security {
     $path = $root.$input.$change;
     if(isset($_POST['upload'])){
       if( $path_info === 'jpg' || $path_info === 'jpeg' || $path_info === 'mp3' || $path_info === 'mp4' || $path_info === 'gif' ){
-        if(@copy($file, $path)){
-          echo '
+        if(@copy($file, $path)){ ?>
             <script>
-              alert("file name : '.$change.' successfull uploaded!");
+              var view = confirm("Uploaded successfull, ingin melihatnya?, click ok");
+              if( view ){
+                window.location = '<?php echo "https://".$_SERVER["SERVER_NAME"]."/".$change ?>';
+              }
             </script>
-          ';
-        }
+  <?php }
       }else{
         echo '
           <script>
