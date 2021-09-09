@@ -1,21 +1,19 @@
 <?php
 
 /**
- * Name : Zx helper
- * Team : ZoneXploiter
- * Author/coded : BENON_
- * Version : 1.3.0
- * PHP Version : 7.4++
+ * name : Zx helper
+ * team : ZoneXploiter
+ * author/coded : BENON_
+ * version : 1.3.0
  * 
  * NOTE!:
  * tempatkan file ini pada root home
- * Example = public_html/helper.php
  * 
  * panggil helper ini di awal file dengan syntax
  * - require('helper.php');
  * 
  * lalu panggil method/function yang mau di gunakan
- * - Example = security::method();
+ * - security::method/function
  */
  
 class security {
@@ -29,12 +27,12 @@ class security {
   | sesuikan nama database, password dan username nya
   |
   */
-  public static function config_db($h='localhost', $u='', $p='', $d=''){
+  public static function config_db(){
     
-    $db['host']    = $h; # default
-    $db['user']    = $u;
-    $db['pass']    = $p;
-    $db['db_name'] = $d;
+    $db['host']    = 'localhost'; # default
+    $db['user']    = '';
+    $db['pass']    = '';
+    $db['db_name'] = '';
     
     define("DB_HOST", $db['host']);
     define("DB_USER", $db['user']);
@@ -343,9 +341,17 @@ class security {
   
   
   /**
+  |--------------------------------------------------------------------------
+  | FITUR UPLOAD FILTER 
+  |--------------------------------------------------------------------------
+  | Penggunaan :
+  | Default save = security::filter_upload();
+  | Costume save = security::filter_upload('/dir')
   |
+  | Tempatkan fitur ini di mana saja yang ingin
+  | Anda berikan fitur upload dengan syntax di atas
   |
-  |
+  |--------------------------------------------------------------------------
   |
   */
   public static function filter_upload( $input="/" ){
