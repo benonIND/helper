@@ -1,19 +1,21 @@
 <?php
 
 /**
- * name : Zx helper
- * team : ZoneXploiter
- * author/coded : BENON_
- * version : 1.3.0
+ * Name : Zx helper
+ * Team : ZoneXploiter
+ * Author/coded : BENON_
+ * Version : 1.3.0
+ * PHP Version : 7.4++
  * 
  * NOTE!:
  * tempatkan file ini pada root home
+ * Example = public_html/helper.php
  * 
  * panggil helper ini di awal file dengan syntax
  * - require('helper.php');
  * 
  * lalu panggil method/function yang mau di gunakan
- * - security::method/function
+ * - Example = security::method();
  */
  
 class security {
