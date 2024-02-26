@@ -2,8 +2,8 @@
 
 /**
  * Name : Zx helper
- * Team : ZoneXploiter
- * Author/coded : BENON_
+ * Tegal Cyber Team
+ * Author/coded : YORIMA_
  * Version : 1.3.0
  * PHP Version : 7.4++
  * 
