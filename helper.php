@@ -70,6 +70,7 @@ class security {
   |--------------------------------------------------------------------------
   | MENGAMANKAN PARAMETER STRING 
   |--------------------------------------------------------------------------
+  | // Yopie rizqi maulana
   |
   | Tata cara Penggunaan :
   | - panggil methodnya -> security::sec_blind();
@@ -95,7 +96,7 @@ class security {
   |
   | Penggunaan:
   | 
-  | Bungkus variable globas post yang di gunakan dengan method ini
+  | Bungkus variable global post yang di gunakan dengan method ini
   |
   | CONTOH:
   | - $user = $_POST['user']; #sebelum -> vuln XSS
