@@ -29,6 +29,7 @@ class security {
   | sesuikan nama database, password dan username nya
   |
   */
+  // yopie rizqi maulana
   public static function config_db(){
     
     $db['host']    = 'localhost'; # default
